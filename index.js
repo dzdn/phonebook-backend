@@ -78,31 +78,34 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
-    if (!body.name) {
-        return response.status(400).json({
-            error: 'name missing'
+    if (body.name === undefined) {
+        return response.status(400).json({ error: 'name missing' })
+    }
+    if (body.number === undefined) {
+        return response.status(400).json({ error: 'number missing' })
+    }
+    
+    let personExists = false
+    Person.find({}).then(persons => {
+        personExists = persons.map(person => person.name).includes(body.name)
+    })
+        .then(result => {
+            console.log(persons)
+            if (personExists) {
+                return response.status(400).json({
+                    error: 'name must be unique'
+                })
+            } else {
+                const person = new Person({
+                    name: body.name,
+                    number: body.number,
+                })
+            
+                person.save().then(savedPerson => {
+                    response.json(person)
+                })
+            }
         })
-    }
-    if (!body.number) {
-        return response.status(400).json({
-            error: 'number missing'
-        })
-    }
-    if (persons.map(person => person.name).includes(body.name)) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
-
-    const person = {
-        id: generateId(),
-        name: body.name,
-        number: body.number,
-    }
-
-    persons = persons.concat(person)
-
-    response.json(person)
 })
 
 app.delete('/api/persons/:id', (request, response) => {
