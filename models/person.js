@@ -18,7 +18,13 @@ const personSchema = new mongoose.Schema({
         minLength: 3,
         required: true
     },
-    number: String
+    number: {
+        type: String,
+        validate: (v) => {
+            // phone number: two parts separated by -, first part 2 or 3 numbers, second part any amount of numbers
+            return /([0-9]{2,3})(-[0-9]+)/.test(v)
+        }
+    }
 })
 
 personSchema.set('toJSON', {
