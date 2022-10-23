@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../exercises/part3/phonebook/ && npm run build && cp -r build ../../../phonebook-backend",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
   },
   "author": "Dustin Williams",
   "license": "MIT",
@@ -22,6 +23,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^8.26.0",
     "nodemon": "^2.0.20"
   }
 }
