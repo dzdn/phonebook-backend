@@ -91,17 +91,17 @@ app.post('/api/persons', (request, response) => {
         personExists = persons.map(person => person.name).includes(body.name)
     })
         .then(result => {
-            console.log(persons)
+            const person = new Person({
+                name: body.name,
+                number: body.number,
+            })
+
             if (personExists) {
-                return response.status(400).json({
-                    error: 'name must be unique'
-                })
+                Person.findOneAndUpdate({ "name": person.name }, { "$set": { "name": person.name, "number": person.number }}, { new: true })
+                    .then(updatedPerson => {
+                        response.json(person)
+                    })
             } else {
-                const person = new Person({
-                    name: body.name,
-                    number: body.number,
-                })
-            
                 person.save().then(savedPerson => {
                     response.json(person)
                 })
